@@ -1,0 +1,22 @@
+{
+    "webServer" : {
+        "folder" : "www",
+        "port" : 3000
+    },
+    "clientdb" : {
+        "index" : "./client/index.db",
+        "index_id" : "./client/index_id.db"
+    },
+    "serverdb" : {
+        "index" : "./server/index.db"
+    },
+    "sse" : {
+        "aes_passphrase" : "sample passphrase",
+        "prf_passphrase" : "another passphrase",
+        "something" : "value"
+    },
+    "remoteServer" : {
+        "folder" : "www",
+        "port" : 3001
+    }
+}

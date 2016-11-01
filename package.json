@@ -1,0 +1,16 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "SSE Implementation done as part of the course, Cryptography Theory and Practise",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anas Ansari, Prasanth Thomas Shaji, Abitha Thankaraj",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "nedb": "^1.8.0",
+    "unirest": "^0.5.1"
+  }
+}
