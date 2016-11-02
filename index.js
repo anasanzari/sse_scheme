@@ -24,24 +24,29 @@ const config = JSON.parse(configJson);
 const aes_passphrase = config.sse.aes_passphrase;
 const prf_passphrase = config.sse.prf_passphrase;
 
-const index_db = new datastore({
-    filename : config.clientdb.index
-});
+var index_db,index_id_db;
 
-const index_id_db = new datastore({
-    filename : config.clientdb.index_id
-});
+var setupDatabases = function(){
+    index_db = new datastore({
+        filename : config.clientdb.index
+    });
 
-var load = 0;
-var callback = function(err){
-    load++;
-    if(load==2){
-        //both db loaded
-        sync();
-    }
+    index_id_db = new datastore({
+        filename : config.clientdb.index_id
+    });
+    var load = 0;
+    var callback = function(err){
+        load++;
+        if(load==2){
+            //both db loaded
+            sync();
+        }
+    };
+    index_db.loadDatabase(callback);
+    index_id_db.loadDatabase(callback);
 };
-index_db.loadDatabase(callback);
-index_id_db.loadDatabase(callback);
+
+setupDatabases();
 
 var encrypt = function(text,passphrase){
     var ciphertext = CryptoJS.AES.encrypt(text, passphrase);
@@ -121,6 +126,33 @@ var setup2 = function(){
         }
     });
 }
+
+var encryptAndSend = function(cb){
+
+    var c = 0;
+    var edb = [];
+    index_id_db.find({}, function (err, docs) {
+        for(var j=0;j<docs.length;j++){
+            var ids = docs[j].ids;
+            var word = docs[j]._id;
+            var k1 = prf(prf_passphrase, "1" + word);
+            var k2 = prf(prf_passphrase, "2" + word);
+            for(var i=0;i<ids.length;i++){
+                var l = prf(k1.toString(),c.toString()).toString();
+                var d = encrypt(ids[i],k2.toString()).toString();
+                c++;
+                var obj = {l:l,d:d};
+                edb.push(obj);
+            }
+        }
+
+        send('/setup',{data:edb},function(response){
+            console.log(response.body);
+            cb(edb);
+        });
+    });
+
+};
 
 var getIndexID = function(cb){
     index_id_db.find({}, function (err, docs) {
@@ -249,6 +281,10 @@ var browse = function(){
         console.log('serving running at http://localhost:'+config.webServer.port+'/');
     });
 
+    /*app.post('/clear',function(req,res){
+
+    });*/
+
     app.post('/setup', upload.single('file'),function (req, res) {
       var doc_id = req.body.docid;
       var document = req.file.buffer.toString();
@@ -264,8 +300,13 @@ var browse = function(){
                   res.json(docs);
               });
           },1000);
-
       });
+    });
+
+    app.post('/send',function(req,res){
+        encryptAndSend(function(edb){
+            res.json(edb);
+        })
     });
 
 };

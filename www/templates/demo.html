@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" style="padding-bottom:80px">
     <div class="row">
         <div class="col-md-12">
             <h2>Setup</h2>
@@ -15,11 +15,11 @@
                      <i ng-show="myform.file.$error.required">*required</i>
                 </div>
 
-                 <button ng-disabled="!myform.$valid" ng-click="upload(file)">Submit</button>
+                 <button class="btn btn-primary" ng-disabled="!myform.$valid" ng-click="upload(file)">Submit</button>
             </form>
 
             <div ng-if="indexdb">
-                <h2>Index Created:</h2>
+                <h2>Client Index:</h2>
                 <table class="table table-striped">
                   <thead>
                       <tr>
@@ -31,6 +31,28 @@
                       <tr ng-repeat="v in indexdb">
                           <td>{{v._id}}</td>
                           <td>{{v.ids}}</td>
+                      </tr>
+                  </tbody>
+                </table>
+
+            </div>
+
+            <h2>Encrypt and Send to Server</h2>
+            <button class="btn btn-primary" ng-click="encrypt()">Submit</button>
+
+            <div ng-if="edb">
+                <h2>Encrypted Database:</h2>
+                <table class="table table-striped">
+                  <thead>
+                      <tr>
+                          <td>L</td>
+                          <td>D</td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="v in edb" style="font-size:1rem">
+                          <td>{{v.l}}</td>
+                          <td>{{v.d}}</td>
                       </tr>
                   </tbody>
                 </table>

@@ -5,6 +5,7 @@
 	var app = angular.module('app', [
 			'ui.router',
 			'AppControllers',
+			'AppServices',
 			'ngResource',
 			'ngFileUpload'
 		]);
@@ -38,7 +39,7 @@
 
     });
 
-	controllers.controller('DemoController', function($scope, Upload) {
+	controllers.controller('DemoController', function($scope, Upload, RestService) {
 
 		$scope.upload = function (file) {
 			if (!$scope.myform.file.$valid || !$scope.docid) {
@@ -56,6 +57,30 @@
 	        });
 	    };
 
+		$scope.encrypt = function(){
+	        RestService.send(function(data) {
+	            $scope.edb = data;
+	            console.log(data);
+	          },
+	          function(err) {
+	            console.log(err);
+	          }
+	        );
+		};
+
+    });
+
+	var services = angular.module('AppServices');
+
+    services.factory('RestService', function($resource) {
+      return $resource('', {}, {
+        send: {
+          method: 'POST',
+          cache: false,
+          isArray: true,
+		  'url' : './send'
+        }
+      });
     });
 
 
