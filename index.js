@@ -175,7 +175,7 @@ var encrypt_index = function(wordlist,doc_id,callback){
 };
 
 var send = function(endpoint,data,callback){
-    unirest.post('http://localhost:'+config.remoteServer.port+endpoint)
+    unirest.post('http://127.0.0.1:'+config.remoteServer.port+endpoint)
     .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
     .send(data)
     .end(function (response) {
@@ -240,7 +240,7 @@ var sync = function(){
     */
 };
 
-/*
+
 app.use(express.static(config.webServer.folder));
 
 const httpServer = http.createServer(app);
@@ -250,4 +250,4 @@ httpServer.listen(config.webServer.port,function(err){
         return;
     }
     console.log('listening on '+config.webServer.port);
-});*/
+});
