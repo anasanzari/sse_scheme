@@ -1,5 +1,4 @@
 /node_modules
 /www/bower_components
-/client/index.db
-/client/index_id.db
-/server/index.db
+/client
+/server
