@@ -46,7 +46,7 @@ var decrypt = function(ciphertext,passphrase){
 
 app.post('/setup', function (req, res) {
   var l = req.body.data;
-  console.log('recivied edb');
+  console.log('received edb');
   console.log(l);
   for(var i=0;i<l.length;i++){
       var obj = l[i];

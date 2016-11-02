@@ -197,11 +197,37 @@ var search = function(word){
 }
 
 var sync = function(){
-    console.log('App');
-    //setup('./sample.txt','rome');
+ 
+    switch (process.argv[2]){
+        case 'setup':
+            if(process.argv.length<5){
+                console.log("Please provide arguments for file and word in setup.")
+            }
+            else
+            setup(process.argv[3].toString().trim(),process.argv[4].toString().trim());
+        break;
+        case 'search':
+            if(process.argv.length<4){
+                console.log("Please provide word to search for.")
+            }
+            else
+            search(process.argv[3].toString().trim());
+        break;
+        case 'send':
+            setup2();
+        break;
+    default:
+            console.log("Invalid arguments\n");
+
+     }
+     /*
+//console.log(process.argv.length);
+//  console.log('App');
+//setup('./sample.txt','rome');
     //setup2();
-    search('just');
+   // search('just');
     //check();
+    */
 };
 
 /*
