@@ -197,7 +197,7 @@ var search = function(word){
 }
 
 var sync = function(){
- 
+    
     switch (process.argv[2]){
         case 'setup':
             if(process.argv.length<5){
