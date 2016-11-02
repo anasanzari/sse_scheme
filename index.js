@@ -197,7 +197,7 @@ var search = function(word){
 }
 
 var sync = function(){
-    
+
     switch (process.argv[2]){
         case 'setup':
             if(process.argv.length<5){
@@ -217,7 +217,17 @@ var sync = function(){
             setup2();
         break;
     default:
-            console.log("Invalid arguments\n");
+            console.log("\nInsufficient arguments. Please provide arguments in the following manner.\n");
+            console.log('---------------------------');
+            console.log('Commands:');
+            console.log('node index setup fileurl docid');
+            console.log('   : Parses the file and creates/updates local index.');
+            console.log('node index send');
+            console.log('    : Sends encrypted database (EDB) to server.');
+            console.log('node index searchterm');
+            console.log('   : Sends request(k1,k2) to server to search for the searchterm.')
+            console.log('node index browser');
+            console.log('   : Starts a localserver for a webinterface.');
 
      }
      /*
