@@ -26,11 +26,16 @@
           templateUrl: './templates/app.html',
           controller: 'AppController'
         })
-		.state('demp',{
-			url: '',
+		.state('demo',{
+			url: '/demo',
 			parent: 'app',
 			templateUrl: './templates/demo.html',
 			controller: 'DemoController'
+		})
+		.state('details',{
+			url: '',
+			parent: 'app',
+			templateUrl: './templates/details.html'
 		});
     });
 
