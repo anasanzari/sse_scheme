@@ -8,6 +8,7 @@ const app = express();
 const aesjs = require('aes-js');
 const bodyParser = require('body-parser');
 const CryptoJS = require("crypto-js");
+const async = require("async");
 
 var p = function(e){
     if(e){
@@ -91,9 +92,29 @@ app.post('/search', function (req, res) {
   var k2 = req.body.k2;
   var c = 0;
   var l = prf(k1.toString(),c.toString()).toString();
-  result(k1,k2,c,l,0,result_callback);
+  //result(k1,k2,c,l,0,result_callback);
+  var result = true;
+  var doc_ids = [];
+  async.doWhilst(function(callback) {
+      index_db.findOne({ _id: l }, function (err, doc) {
+          if(doc){
+              var m = decrypt(doc.d,k2);
+              doc_ids.push(m);
+              c++;
+              l = prf(k1.toString(),c.toString()).toString();
+          }else{
+              result = false;
+          }
+          callback();
+      });
 
-  res.json({status:'success'});
+    }, function(){
+      return result;
+  }, function(err) {
+      res.json(doc_ids);
+  });
+
+
 });
 
 const httpServer = http.createServer(app);

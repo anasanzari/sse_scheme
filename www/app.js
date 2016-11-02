@@ -7,7 +7,9 @@
 			'AppControllers',
 			'AppServices',
 			'ngResource',
-			'ngFileUpload'
+			'ngAnimate',
+			'ngFileUpload',
+			'ui.bootstrap'
 		]);
 
 	angular.module('AppControllers',[]);
@@ -58,7 +60,7 @@
 	    };
 
 		$scope.encrypt = function(){
-	        RestService.send(function(data) {
+			RestService.send(function(data) {
 	            $scope.edb = data;
 	            console.log(data);
 	          },
@@ -66,6 +68,19 @@
 	            console.log(err);
 	          }
 	        );
+		};
+
+		$scope.search = function(t){
+			console.log('searching for '+t);
+			var data = {term:t};
+			RestService.search(data,function(data) {
+				$scope.search_results = data;
+				console.log(data);
+			  },
+			  function(err) {
+				console.log(err);
+			  }
+			);
 		};
 
     });
@@ -79,6 +94,12 @@
           cache: false,
           isArray: true,
 		  'url' : './send'
+	  	},
+		search: {
+          method: 'POST',
+          cache: false,
+          isArray: true,
+		  'url' : './search'
         }
       });
     });

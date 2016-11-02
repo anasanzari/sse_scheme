@@ -8,7 +8,9 @@ const app = express();
 const unirest = require('unirest');
 const async = require("async");
 const CryptoJS = require("crypto-js");
-const multer  = require('multer')
+const multer  = require('multer');
+const bodyParser = require('body-parser');
+
 
 
 var p = function(e){
@@ -206,7 +208,7 @@ var send = function(endpoint,data,callback){
     });
 }
 
-var search = function(word){
+var search = function(word,cb){
     var k1 = prf(prf_passphrase, "1" + word);
     var k2 = prf(prf_passphrase, "2" + word);
     console.log('k1 :'+k1.toString());
@@ -215,7 +217,11 @@ var search = function(word){
     var l = prf(k1.toString(),c.toString()).toString();
     console.log('l: '+l);
     send('/search',{k1:k1.toString(),k2:k2.toString()},function(response){
+        console.log('Search Results:');
         console.log(response.body);
+        if(cb){
+            cb(response.body);
+        }
     });
 }
 
@@ -250,7 +256,7 @@ var sync = function(){
             console.log('   : Parses the file and creates/updates local index.');
             console.log('node index send');
             console.log('    : Sends encrypted database (EDB) to server.');
-            console.log('node index searchterm');
+            console.log('node index search searchterm');
             console.log('   : Sends request(k1,k2) to server to search for the searchterm.')
             console.log('node index browse');
             console.log('   : Starts a localserver for a webinterface.');
@@ -307,6 +313,12 @@ var browse = function(){
         encryptAndSend(function(edb){
             res.json(edb);
         })
+    });
+    var jsonParser = bodyParser.json();
+    app.post('/search',jsonParser,function(req,res){
+        search(req.body.term,function(val){
+            res.json(val);
+        });
     });
 
 };

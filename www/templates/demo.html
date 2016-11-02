@@ -19,29 +19,36 @@
             </form>
 
             <div ng-if="indexdb">
-                <h2>Client Index:</h2>
-                <table class="table table-striped">
-                  <thead>
-                      <tr>
-                          <td>Word</td>
-                          <td>Doc List</td>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr ng-repeat="v in indexdb">
-                          <td>{{v._id}}</td>
-                          <td>{{v.ids}}</td>
-                      </tr>
-                  </tbody>
-                </table>
+                <h2>Client Index:
+                    <button type="button" class="btn btn-default" ng-click="isIndexDbCollapsed = !isIndexDbCollapsed">Collapse</button></h2>
+                <div uib-collapse="isIndexDbCollapsed">
+                    <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <td>Word</td>
+                              <td>Doc List</td>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="v in indexdb">
+                              <td>{{v._id}}</td>
+                              <td>{{v.ids}}</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                </div>
+
+                <h2>Encrypt and Send to Server</h2>
+                <button class="btn btn-primary" ng-click="encrypt()">Submit</button>
 
             </div>
 
-            <h2>Encrypt and Send to Server</h2>
-            <button class="btn btn-primary" ng-click="encrypt()">Submit</button>
+
 
             <div ng-if="edb">
-                <h2>Encrypted Database:</h2>
+                <h2>Encrypted Database:
+                    <button type="button" class="btn btn-default" ng-click="isEdbCollapsed = !isEdbCollapsed">Collapse</button></h2>
+                <div uib-collapse="isEdbCollapsed">
                 <table class="table table-striped">
                   <thead>
                       <tr>
@@ -56,7 +63,28 @@
                       </tr>
                   </tbody>
                 </table>
+                </div>
+
+                <h2>Search</h2>
+                <form name="searchform">
+                    <div class="form-group">
+                        <label>Term</label>
+                        <input class="form-control" name="term" ng-model="searchterm" size="39" required="" type="text">
+                        <i ng-show="searchform.term.$error.required">*required</i>
+                    </div>
+
+                    <button class="btn btn-primary" ng-disabled="!searchform.$valid" ng-click="search(searchterm)">Submit</button>
+                </form>
+
             </div>
+
+            <div ng-if="search_results">
+                <h3>Search Results:</h3>
+                <p ng-if="search_results.length==0">No docs were found.</p>
+                <span ng-repeat="v in search_results track by $index" class="label label-default" style="margin:5px;font-size:2rem">{{v}}</span>
+            </div>
+
+
 
         </div>
     </div>
