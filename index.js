@@ -6,8 +6,10 @@ const fs = require('fs'); //filesystem
 const datastore = require('nedb');
 const app = express();
 const unirest = require('unirest');
-
+const async = require("async");
 const CryptoJS = require("crypto-js");
+const multer  = require('multer')
+
 
 var p = function(e){
     if(e){
@@ -40,12 +42,6 @@ var callback = function(err){
 };
 index_db.loadDatabase(callback);
 index_id_db.loadDatabase(callback);
-
-/*var doc = { _id: 'id', check: 'check'};
-db.insert(doc,function(err,newDoc){
-    console.log(err);
-});*/
-
 
 var encrypt = function(text,passphrase){
     var ciphertext = CryptoJS.AES.encrypt(text, passphrase);
@@ -81,11 +77,14 @@ var decrypt_file = function(i_file_url,o_file_url){
 var setup = function(document_url,doc_id){
     var document = fs.readFileSync(document_url);
     var wordlist = document.toString().split(" ");
-    for(var i=0;i<wordlist.length;i++){
-        var w = wordlist[i];
-        inc_count(w);
-        addtoID(w,doc_id);
-    }
+
+    async.forEach(wordlist, function (item, callback){
+        inc_count(item);
+        addtoID(item,doc_id);
+        callback();
+    }, function(err) {
+        console.log(doc_id+' is added successfully');
+    });
 };
 
 var setup_helper = function(word){
@@ -122,6 +121,12 @@ var setup2 = function(){
         }
     });
 }
+
+var getIndexID = function(cb){
+    index_id_db.find({}, function (err, docs) {
+        cb(docs);
+    });
+};
 
 
 var prf = function(passphrase,t){
@@ -160,20 +165,6 @@ var addtoID = function(word,doc_id){
     });
 }
 
-var encrypt_index = function(wordlist,doc_id,callback){
-    for(var i=0;i<wordlist.length;i++){
-        var w = wordlist[i];
-        inc_count(w);
-        addtoID(w,doc_id);
-        // console.log("word:"+w);
-        // var k1 = prf(prf_passphrase, "1" + w);
-        // var k2 = prf(prf_passphrase, "2" + w);
-        // //get current word count
-
-    }
-
-};
-
 var send = function(endpoint,data,callback){
     unirest.post('http://127.0.0.1:'+config.remoteServer.port+endpoint)
     .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
@@ -202,20 +193,23 @@ var sync = function(){
         case 'setup':
             if(process.argv.length<5){
                 console.log("Please provide arguments for file and word in setup.")
+            }else{
+                setup(process.argv[3].toString().trim(),process.argv[4].toString().trim());
             }
-            else
-            setup(process.argv[3].toString().trim(),process.argv[4].toString().trim());
-        break;
+            break;
         case 'search':
             if(process.argv.length<4){
                 console.log("Please provide word to search for.")
+            }else{
+                search(process.argv[3].toString().trim());
             }
-            else
-            search(process.argv[3].toString().trim());
-        break;
+            break;
         case 'send':
             setup2();
-        break;
+            break;
+        case 'browse':
+            browse();
+            break;
     default:
             console.log("\nInsufficient arguments. Please provide arguments in the following manner.\n");
             console.log('---------------------------');
@@ -226,7 +220,7 @@ var sync = function(){
             console.log('    : Sends encrypted database (EDB) to server.');
             console.log('node index searchterm');
             console.log('   : Sends request(k1,k2) to server to search for the searchterm.')
-            console.log('node index browser');
+            console.log('node index browse');
             console.log('   : Starts a localserver for a webinterface.');
 
      }
@@ -240,14 +234,38 @@ var sync = function(){
     */
 };
 
+var browse = function(){
+    app.use(express.static(config.webServer.folder));
 
-app.use(express.static(config.webServer.folder));
+    var storage = multer.memoryStorage();
+    var upload = multer({ storage: storage });
 
-const httpServer = http.createServer(app);
-httpServer.listen(config.webServer.port,function(err){
-    if(err){
-        console.log(err.message);
-        return;
-    }
-    console.log('listening on '+config.webServer.port);
-});
+    const httpServer = http.createServer(app);
+    httpServer.listen(config.webServer.port,function(err){
+        if(err){
+            console.log(err.message);
+            return;
+        }
+        console.log('serving running at http://localhost:'+config.webServer.port+'/');
+    });
+
+    app.post('/setup', upload.single('file'),function (req, res) {
+      var doc_id = req.body.docid;
+      var document = req.file.buffer.toString();
+      var wordlist = document.toString().split(" ");
+      async.forEach(wordlist, function (item, callback){
+          inc_count(item);
+          addtoID(item,doc_id);
+          callback();
+      }, function(err) {
+          console.log(doc_id+' is added successfully');
+          setTimeout(function() {
+              getIndexID(function(docs){
+                  res.json(docs);
+              });
+          },1000);
+
+      });
+    });
+
+};

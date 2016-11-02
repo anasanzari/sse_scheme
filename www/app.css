@@ -1,0 +1,20 @@
+body {
+    padding-top: 70px;
+}
+.overview{
+    text-align: center;
+    border-right: 2px solid rgba(0,0,0,.3);
+    position:fixed;
+    padding:60px 50px 70px 50px;
+    width:30%;
+}
+
+.code {
+    font-size: 1rem;
+}
+.course{
+    font-size: 2rem;
+}
+.project{
+    font-size: 3rem;
+}

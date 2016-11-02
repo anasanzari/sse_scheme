@@ -1,0 +1,41 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Setup</h2>
+            <p> Browse for files to encrypt.</p>
+            <form name="myform">
+                <div class="form-group">
+                    <label>Docid</label>
+                    <input class="form-control" name="docid" ng-model="docid" size="39" required="" type="text">
+                    <i ng-show="myform.docid.$error.required">*required</i>
+                </div>
+                <div class="form-group">
+                    <label>File</label>
+                    <input ngf-select="" ng-model="file" name="file" required="" type="file">
+                     <i ng-show="myform.file.$error.required">*required</i>
+                </div>
+
+                 <button ng-disabled="!myform.$valid" ng-click="upload(file)">Submit</button>
+            </form>
+
+            <div ng-if="indexdb">
+                <h2>Index Created:</h2>
+                <table class="table table-striped">
+                  <thead>
+                      <tr>
+                          <td>Word</td>
+                          <td>Doc List</td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="v in indexdb">
+                          <td>{{v._id}}</td>
+                          <td>{{v.ids}}</td>
+                      </tr>
+                  </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

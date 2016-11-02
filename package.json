@@ -9,7 +9,9 @@
   "author": "Anas Ansari, Prasanth Thomas Shaji, Abitha Thankaraj",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.1.2",
     "body-parser": "^1.15.2",
+    "multer": "^1.2.0",
     "nedb": "^1.8.0",
     "unirest": "^0.5.1"
   }
