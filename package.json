@@ -11,6 +11,8 @@
   "dependencies": {
     "async": "^2.1.2",
     "body-parser": "^1.15.2",
+    "crypto-js": "^3.1.8",
+    "express": "^4.14.0",
     "multer": "^1.2.0",
     "nedb": "^1.8.0",
     "unirest": "^0.5.1"

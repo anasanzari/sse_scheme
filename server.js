@@ -5,7 +5,6 @@ const express = require('express');
 const fs = require('fs'); //filesystem
 const datastore = require('nedb');
 const app = express();
-const aesjs = require('aes-js');
 const bodyParser = require('body-parser');
 const CryptoJS = require("crypto-js");
 const async = require("async");
