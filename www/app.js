@@ -6,6 +6,7 @@
 			'ui.router',
 			'AppControllers',
 			'AppServices',
+			'AppDirectives',
 			'ngResource',
 			'ngAnimate',
 			'ngFileUpload',
@@ -108,6 +109,22 @@
         }
       });
     });
+
+	var directives = angular.module('AppDirectives');
+	directives.directive('tex', function() {
+	  var refresh = function(element) {
+	      MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
+	  };
+	  return {
+		restrict : 'EA',
+		transclude: true,
+	    link: function(scope, element, attrs) {
+	        refresh(element[0]);
+	    },
+	    template : '<div ng-transclude></div>'
+
+	  };
+	});
 
 
 })();

@@ -94,11 +94,16 @@ var setup = function(document_url,doc_id){
     });
 };
 
+var p = function(a,b,c){
+    console.log('l: '+a);
+    console.log('d: '+b);
+    console.log('c: '+c);
+}
+
 var setup_helper = function(word){
 
     var k1 = prf(prf_passphrase, "1" + word);
     var k2 = prf(prf_passphrase, "2" + word);
-
     var c = 0;
     var edb = [];
     index_id_db.findOne({'_id': word }, function (err, doc) {
@@ -131,10 +136,11 @@ var setup2 = function(){
 
 var encryptAndSend = function(cb){
 
-    var c = 0;
+
     var edb = [];
     index_id_db.find({}, function (err, docs) {
         for(var j=0;j<docs.length;j++){
+            var c = 0;
             var ids = docs[j].ids;
             var word = docs[j]._id;
             var k1 = prf(prf_passphrase, "1" + word);
@@ -147,7 +153,7 @@ var encryptAndSend = function(cb){
                 edb.push(obj);
             }
         }
-
+        console.log(edb);
         send('/setup',{data:edb},function(response){
             console.log(response.body);
             cb(edb);
@@ -243,7 +249,7 @@ var sync = function(){
             }
             break;
         case 'send':
-            setup2();
+            encryptAndSend();
             break;
         case 'browse':
             browse();
@@ -294,7 +300,7 @@ var browse = function(){
     app.post('/setup', upload.single('file'),function (req, res) {
       var doc_id = req.body.docid;
       var document = req.file.buffer.toString();
-      var wordlist = document.toString().split(" ");
+      var wordlist = document.toString().trim().split(" ");
       async.forEach(wordlist, function (item, callback){
           inc_count(item);
           addtoID(item,doc_id);
@@ -316,7 +322,9 @@ var browse = function(){
     });
     var jsonParser = bodyParser.json();
     app.post('/search',jsonParser,function(req,res){
-        search(req.body.term,function(val){
+        var term = req.body.term.trim();
+        console.log('Search request for '+term);
+        search(''+term,function(val){
             res.json(val);
         });
     });

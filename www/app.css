@@ -18,3 +18,13 @@ body {
 .project{
     font-size: 3rem;
 }
+tex{
+    padding: 70px;
+}
+tex li{
+    font-size: 2rem;
+}
+tex p{
+    font-size: 2rem;
+    font-weight: bold;
+}

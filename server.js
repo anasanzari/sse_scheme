@@ -48,54 +48,32 @@ app.post('/setup', function (req, res) {
   var l = req.body.data;
   console.log('received edb');
   console.log(l);
-  for(var i=0;i<l.length;i++){
-      var obj = l[i];
+
+  async.forEach(l, function (obj, callback){
       index_db.update({ _id : obj.l }, { $set: { d : obj.d }}, {upsert:true}, function (err, numReplaced) {
 
       });
-  }
-  res.json({status:'success'});
+      callback();
+  }, function(err) {
+      console.log('Done.')
+      res.json({status:'success'});
+  });
+
 });
 
-var result = function(k1,k2,c,l,count,callback){
-    index_db.findOne({ _id: l }, function (err, doc) {
-        //console.log(doc);
-        if(doc){
-            var m = decrypt(doc.d,k2)
-            console.log(m);
-            callback(k1,k2,c,l,++count,true);
-        }else{
-
-            callback(k1,k2,c,l,count,false);
-        }
-
-    });
-};
-
-var result_callback = function(k1,k2,c,l,count,v){
-    if(v){
-        c++;
-        var l = prf(k1.toString(),c.toString()).toString();
-        result(k1,k2,c,l,count,result_callback);
-    }else{
-        //end of results
-        if(count==0){
-            console.log('No Results found.');
-        }
-    }
-}
-
 app.post('/search', function (req, res) {
-
+  console.log('Search request recieved.');
   var k1 = req.body.k1;
   var k2 = req.body.k2;
+  console.log('k1: '+k1);
+  console.log('k2: '+k2);
   var c = 0;
   var l = prf(k1.toString(),c.toString()).toString();
-  //result(k1,k2,c,l,0,result_callback);
   var result = true;
   var doc_ids = [];
   async.doWhilst(function(callback) {
       index_db.findOne({ _id: l }, function (err, doc) {
+          console.log(doc);
           if(doc){
               var m = decrypt(doc.d,k2);
               doc_ids.push(m);

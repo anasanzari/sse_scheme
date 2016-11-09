@@ -1,42 +1,80 @@
 <div class="container-fluid" style="padding-bottom:80px">
     <div class="row">
         <div class="col-md-12">
-            <h1>Searchable Symmetric Encryotion</h1>
-            
+            <h1>Searchable Symmetric Encryption</h1>
+
             <h2>Problem Statement</h2>
-            <p>We design and implement dynamic symmetric searchable encryption schemes that efficiently and privately search server-held encrypted databases with tens of billions of record-keyword pairs.
+            <p>To design and implement dynamic symmetric searchable encryption schemes that
+                efficiently and privately search server-held encrypted databases of record-keyword pairs.
             </p>
 
             <h2>Design</h2>
-            <algrothim>
-            Setup(DB)
-					
-1. K ←$ {0, 1}λ allocate list L 
 
-2. For each w ∈ W:			
-K1 ← F(K,1||w), K2 ← F(K,2||w) 
-Initialize counter c ← 0
-For each id ∈ DB(w) :
-		l ← F(K1,c); d ← Enc(K2,id); c++
-		Add (l, d) to the list L (in lex order) 
-    Set γ ← Create(L)
-					
-3. Output the client key K and EDB = γ.
+            <h3>Preliminaries</h3>
+            <tex>
+                <ul style="list-style:none">
+                    <li>A database is a list of identifier/keyword-set pairs.</li>
+                    <li>\( DB = (id_{i},W_{i})_{i=1}^{d} \) Where \(id_{i} \in  \{ 0, 1 \}^{\lambda} \) and \( W_{i} \subseteq \{ 0, 1 \}^{*} \).</li>
+                    <li> Define \( W = \bigcup_{i=1}^{d} W_{i} \)</li>
+                    <li> Define \(DB(w) = \{ id_{i} | w \in W_{i} \} \)
+                </ul>
 
- Search
-		 	 	 							
-Client: 	
-On input (K, w),
-K1 ← F(K,1||w), K2 ← F(K,2||w)
-Send (K1, K2) to the server. 
-		 	 	 		
-							
-Server:
-           For c = 0 until Get returns ⊥, 	
-	d ← Get(γ,F(K1,c)); m ← Dec(K2,d) 
-Parse and output id in each m. 
+            </tex>
 
-</algrothim>
+            <div class="row">
+                <div class="col-md-6">
+                    <tex>
+                        <p>Setup(DB)</p>
+                         <ol>
+                             <li> \( K \leftarrow  \{ 0, 1 \}^{\lambda} \)</li>
+                             <li> Allocate List \( L \) </li>
+                             <li> For each  \( w \in W \) :
+                                 <ul style="list-style:none">
+                                    <li> \( K1 \leftarrow F(K,1||w) \) </li>
+                                    <li> \( K2 \leftarrow F(K,2||w) \) </li>
+                                    <li> Initialize counter \(  c \leftarrow 0 \)
+                                    <li> For each \( id \space \in DB(w)\)</li>
+                                    <ul style="list-style:none">
+                        				<li> \( l \leftarrow F(K1,c) \)</li>
+                        				<li> \( d \leftarrow Enc(K2,id) \)</li>
+                        				<li> \( c++ \)</li>
+                        				<li> Add \( (l, d)  \) to the list \( L \)</li>
+                                    </ul>
+                                  </ul>
+                    		    <li> Set \( \gamma \leftarrow Create(L) \)</li>
+                    			<li> Output the client key \(K \) and Encrypted DB \( \gamma \)</li>
+                        </ol>
+                    </tex>
+                </div>
+                <div class="col-md-6">
+
+                    <tex>
+                        <p>Search</p>
+
+                        <p>Client\((K,w)\)</p>
+                         <ol>
+                             <li> \( K1 \leftarrow F(K,1||w) \) </li>
+                             <li> \( K2 \leftarrow F(K,2||w) \) </li>
+                             <li> Send \( (K1,K2) \) to Server
+                        </ol>
+                    </tex>
+
+                    <tex>
+
+                        <p>Server\((K1,K2)\)</p>
+                         <ol>
+                             <li> For \( c = 0 \) until Get returns empty</li>
+                             <ul>
+                                 <li> \( d \leftarrow Get(\gamma,F(K1,c)) \) </li>
+                                 <li> \( m \leftarrow Dec(K2,d) \)</li>
+                             </ul>
+                        </ol>
+                    </tex>
+
+                </div>
+            </div>
+
+
 
 
             <h2>References</h2>
