@@ -1,8 +1,48 @@
 <div class="container-fluid" style="padding-bottom:80px">
     <div class="row">
         <div class="col-md-12">
-            <h1>Project Details<h2>
-            <p>Algorithms blah, blah.</p>
+            <h1>Searchable Symmetric Encryotion</h1>
+            
+            <h2>Problem Statement</h2>
+            <p>We design and implement dynamic symmetric searchable encryption schemes that efficiently and privately search server-held encrypted databases with tens of billions of record-keyword pairs.
+            </p>
+
+            <h2>Design</h2>
+            <algrothim>
+            Setup(DB)
+					
+1. K ←$ {0, 1}λ allocate list L 
+
+2. For each w ∈ W:			
+K1 ← F(K,1||w), K2 ← F(K,2||w) 
+Initialize counter c ← 0
+For each id ∈ DB(w) :
+		l ← F(K1,c); d ← Enc(K2,id); c++
+		Add (l, d) to the list L (in lex order) 
+    Set γ ← Create(L)
+					
+3. Output the client key K and EDB = γ.
+
+ Search
+		 	 	 							
+Client: 	
+On input (K, w),
+K1 ← F(K,1||w), K2 ← F(K,2||w)
+Send (K1, K2) to the server. 
+		 	 	 		
+							
+Server:
+           For c = 0 until Get returns ⊥, 	
+	d ← Get(γ,F(K1,c)); m ← Dec(K2,d) 
+Parse and output id in each m. 
+
+</algrothim>
+
+
+            <h2>References</h2>
+            <ul>
+            	<li>Dynamic Searchable Encryption in Very-Large Databases: Data Structures and Implementation</li>
+            </ul>
         </div>
     </div>
 </div>

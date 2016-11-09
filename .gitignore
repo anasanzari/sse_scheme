@@ -2,3 +2,5 @@
 /www/bower_components
 /client
 /server
+
+.DS_Store
