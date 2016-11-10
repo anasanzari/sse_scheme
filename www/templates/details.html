@@ -64,8 +64,9 @@
                         <p>Server\((K1,K2)\)</p>
                          <ol>
                              <li> For \( c = 0 \) until Get returns empty</li>
-                             <ul>
-                                 <li> \( d \leftarrow Get(\gamma,F(K1,c)) \) </li>
+                             <ul style="list-style:none">
+				 <li> \( l \leftarrow F(K1,c) \) </li>
+                                 <li> \( d \leftarrow Get(\gamma,l) \) </li>
                                  <li> \( m \leftarrow Dec(K2,d) \)</li>
                              </ul>
                         </ol>
